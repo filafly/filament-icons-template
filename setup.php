@@ -284,6 +284,32 @@ if (file_exists($readmeStubPath)) {
     echo "✅ Removed README.stub\n";
 }
 
+// Update generate-icon-cases.php with correct configuration
+$generateIconCasesPath = __DIR__.'/generate-icon-cases.php';
+if (file_exists($generateIconCasesPath)) {
+    $generateIconCasesContent = file_get_contents($generateIconCasesPath);
+
+    // Replace configuration placeholders
+    $generateIconCasesContent = str_replace(
+        "'afatmustafa/blade-hugeicons'",
+        "'{$config['blade_package']}'",
+        $generateIconCasesContent
+    );
+    $generateIconCasesContent = str_replace(
+        "'Hugeicons'",
+        "'{$config['iconset_pascal']}'",
+        $generateIconCasesContent
+    );
+    $generateIconCasesContent = str_replace(
+        "'src/Enums/Hugeicons.php'",
+        "'src/Enums/{$config['iconset_pascal']}.php'",
+        $generateIconCasesContent
+    );
+
+    file_put_contents($generateIconCasesPath, $generateIconCasesContent);
+    echo "✅ Configured generate-icon-cases.php\n";
+}
+
 // Delete TemplateIcons.php if it exists
 if (file_exists(__DIR__.'/TemplateIcons.php')) {
     unlink(__DIR__.'/TemplateIcons.php');
@@ -294,7 +320,7 @@ echo "\n🎉 Package configured successfully!\n";
 echo "\nNext steps:\n";
 echo "1. Run 'composer install' to install dependencies\n";
 echo '2. Update the icon mappings in src/'.$config['iconset_pascal']."Icons.php\n";
-echo '3. Add all available icons to src/Enums/'.$config['iconset_pascal'].".php\n";
+echo '3. Run "php generate-icon-cases.php" to automatically generate all icon cases in src/Enums/'.$config['iconset_pascal'].".php\n";
 if ($hasStyles) {
     echo '4. Configure the available styles in src/Enums/'.$config['iconset_pascal']."Style.php\n";
 }
