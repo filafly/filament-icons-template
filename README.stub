@@ -26,10 +26,10 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-## Setting the global icon style
-
 <!-- If your icon set has multiple styles, uncomment and customize this section -->
 <!--
+## Setting the global icon style
+
 {IconSet} icons come in multiple styles that you can switch between. Available styles include:
 
 - Regular (default)
@@ -45,12 +45,9 @@ You can change the style using the following methods:
 {IconSet}Icons::make()->light();
 // ... other style methods
 ```
--->
 
 ## Setting style for a subset of icons
 
-<!-- If your icon set supports style overrides, uncomment and customize this section -->
-<!--
 If you need to override certain icons to use a different style, you can use either icon aliases or icon enum cases.
 
 ### Using icon aliases
@@ -129,54 +126,10 @@ use {Vendor}\Icons\{IconSet}\Enums\{IconSet};
 ]);
 ```
 
-## Using {IconSet} icons in your views
-
-You can use any {IconSet} icon in your Blade views using the `@svg` directive:
-
-```blade
-@svg('{iconset}-house')
-@svg('{iconset}-heart')
-@svg('{iconset}-settings')
-```
-
-<!-- If your icon set has styles, add this section -->
-<!--
-For different styles:
-```blade
-@svg('{iconset}-house-bold')
-@svg('{iconset}-heart-light')
-@svg('{iconset}-settings-regular')
-```
--->
-
-## Available Icons
-
-This package includes all {number} icons from the {IconSet} icon library. You can browse all available icons at [{IconSet} Website](https://example.com).
-
-## Icon Mapping
-
-The package maps Filament's icon aliases to appropriate {IconSet} icons. The complete mapping covers:
-
-- Panel navigation and UI elements
-- Form components (builder, repeater, file upload, etc.)
-- Table components (actions, filters, columns)
-- Notifications
-- Actions (CRUD operations)
-- Infolists and badges
-- Support components
-
-## Requirements
-
-- PHP 8.2 or higher
-- Laravel 11.0 or higher
-- Filament 4.0 or higher
-- {blade-package-name} (automatically installed)
-
 ## Credits
 
 - [{IconSet}](https://example.com) for the icon library
 - [Filament Icons](https://github.com/filafly/filament-icons) for the base icon system
-- [Your Name](https://github.com/yourusername)
 
 ## License
 

@@ -231,7 +231,6 @@ if (file_exists($readmeStubPath)) {
     $readme = str_replace('{blade-package-name}', $config['blade_package'], $readme);
     $readme = str_replace('{author_name}', $config['author_name'], $readme);
     $readme = str_replace('{homepage}', $config['homepage'] ?: 'https://github.com/'.$config['vendor'], $readme);
-    $readme = str_replace('Your Name', $config['author_name'], $readme);
 
     // Handle style-related sections
     if (! $hasStyles) {
