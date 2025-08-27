@@ -319,8 +319,8 @@ if (file_exists(__DIR__.'/TemplateIcons.php')) {
 echo "\n🎉 Package configured successfully!\n";
 echo "\nNext steps:\n";
 echo "1. Run 'composer install' to install dependencies\n";
-echo '2. Update the icon mappings in src/'.$config['iconset_pascal']."Icons.php\n";
-echo '3. Run "php generate-icon-cases.php" to automatically generate all icon cases in src/Enums/'.$config['iconset_pascal'].".php\n";
+echo '2. Run "php generate-icon-cases.php" to automatically generate all icon cases in src/Enums/'.$config['iconset_pascal'].".php\n";
+echo '3. Update the icon mappings in src/'.$config['iconset_pascal']."Icons.php\n";
 if ($hasStyles) {
     echo '4. Configure the available styles in src/Enums/'.$config['iconset_pascal']."Style.php\n";
 }
