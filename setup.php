@@ -29,6 +29,37 @@ $config['icon_prefix'] = prompt("\nEnter the icon prefix used in Blade component
 // Style support
 $hasStyles = strtolower(prompt("\nDoes this icon set have multiple styles (e.g., regular, bold, light)? (y/n): ", 'n')) === 'y';
 
+$styles = [];
+if ($hasStyles) {
+    echo "\n📎 Style Configuration\n";
+    echo "---------------------\n";
+    echo "Enter the styles available for this icon set.\n";
+    echo "For each style, provide:\n";
+    echo "  - Name (e.g., 'regular', 'bold', 'light')\n";
+    echo "  - Suffix used in icon names (e.g., '', '-bold', '-light')\n";
+    echo "  - Enum case name (e.g., 'Regular', 'Bold', 'Light')\n\n";
+    
+    // Always add default/regular style first
+    echo "Default style (usually 'regular' with no suffix):\n";
+    $defaultStyle = [];
+    $defaultStyle['name'] = prompt("  Style name (e.g., 'regular'): ", 'regular');
+    $defaultStyle['suffix'] = prompt("  Icon suffix (press Enter for none): ", '');
+    $defaultStyle['enum'] = prompt("  Enum case (e.g., 'Regular'): ", 'Regular');
+    $styles[] = $defaultStyle;
+    
+    // Add additional styles
+    while (true) {
+        $addMore = strtolower(prompt("\nAdd another style? (y/n): ", 'n')) === 'y';
+        if (!$addMore) break;
+        
+        $style = [];
+        $style['name'] = prompt("  Style name: ");
+        $style['suffix'] = prompt("  Icon suffix (e.g., '-bold'): ");
+        $style['enum'] = prompt("  Enum case: ");
+        $styles[] = $style;
+    }
+}
+
 echo "\n\n🔧 Configuring package...\n";
 
 // Update composer.json
@@ -110,20 +141,134 @@ $newStyleEnumPath = __DIR__ . '/src/Enums/' . $config['iconset_pascal'] . 'Style
 
 if (file_exists($styleEnumPath)) {
     if ($hasStyles) {
-        $styleEnum = file_get_contents($styleEnumPath);
-        $styleEnum = str_replace('Vendor\\Icons\\{IconSet}', $config['vendor_namespace'] . '\\Icons\\' . $config['iconset_pascal'], $styleEnum);
-        $styleEnum = str_replace('{IconSet}Style', $config['iconset_pascal'] . 'Style', $styleEnum);
+        // Generate style enum content
+        $styleEnumContent = "<?php\n\n";
+        $styleEnumContent .= "namespace " . $config['vendor_namespace'] . "\\Icons\\" . $config['iconset_pascal'] . "\\Enums;\n\n";
+        $styleEnumContent .= "use Filafly\\Icons\\Contracts\\StyleEnum;\n\n";
+        $styleEnumContent .= "enum " . $config['iconset_pascal'] . "Style: string implements StyleEnum\n";
+        $styleEnumContent .= "{\n";
         
-        file_put_contents($newStyleEnumPath, $styleEnum);
-        if ($styleEnumPath !== $newStyleEnumPath) {
+        // Add enum cases
+        foreach ($styles as $style) {
+            $styleEnumContent .= "    case " . $style['enum'] . " = '" . $style['suffix'] . "';\n";
+        }
+        
+        $styleEnumContent .= "\n    public function getStyleName(): string\n";
+        $styleEnumContent .= "    {\n";
+        $styleEnumContent .= "        return match (\$this) {\n";
+        foreach ($styles as $style) {
+            $styleEnumContent .= "            self::" . $style['enum'] . " => '" . $style['name'] . "',\n";
+        }
+        $styleEnumContent .= "        };\n";
+        $styleEnumContent .= "    }\n\n";
+        
+        $styleEnumContent .= "    public function getEnumSuffix(): string\n";
+        $styleEnumContent .= "    {\n";
+        $styleEnumContent .= "        return match (\$this) {\n";
+        foreach ($styles as $style) {
+            $styleEnumContent .= "            self::" . $style['enum'] . " => '" . $style['enum'] . "',\n";
+        }
+        $styleEnumContent .= "        };\n";
+        $styleEnumContent .= "    }\n\n";
+        
+        $styleEnumContent .= "    public static function getStyleNames(): array\n";
+        $styleEnumContent .= "    {\n";
+        $styleEnumContent .= "        return [";
+        $styleNames = array_map(function($s) { return "'" . $s['name'] . "'"; }, $styles);
+        $styleEnumContent .= implode(', ', $styleNames);
+        $styleEnumContent .= "];\n";
+        $styleEnumContent .= "    }\n\n";
+        
+        $styleEnumContent .= "    public static function fromStyleName(string \$styleName): ?self\n";
+        $styleEnumContent .= "    {\n";
+        $styleEnumContent .= "        return match (strtolower(\$styleName)) {\n";
+        foreach ($styles as $style) {
+            $styleEnumContent .= "            '" . $style['name'] . "' => self::" . $style['enum'] . ",\n";
+        }
+        $styleEnumContent .= "            default => null,\n";
+        $styleEnumContent .= "        };\n";
+        $styleEnumContent .= "    }\n";
+        $styleEnumContent .= "}";
+        
+        file_put_contents($newStyleEnumPath, $styleEnumContent);
+        if ($styleEnumPath !== $newStyleEnumPath && file_exists($styleEnumPath)) {
             unlink($styleEnumPath);
         }
-        echo "✅ Updated Style enum\n";
+        echo "✅ Generated Style enum with " . count($styles) . " styles\n";
     } else {
         // Delete style enum if not needed
         unlink($styleEnumPath);
         echo "✅ Removed Style enum (not needed)\n";
     }
+}
+
+// Update README.md
+$readmePath = __DIR__ . '/README.md';
+if (file_exists($readmePath)) {
+    $readme = file_get_contents($readmePath);
+    
+    // Remove setup instructions section
+    $readme = preg_replace('/<!-- SETUP-INSTRUCTIONS-START -->.*?<!-- SETUP-INSTRUCTIONS-END -->\n\n/s', '', $readme);
+    
+    // Replace placeholders
+    $readme = str_replace('{vendor}', $config['vendor'], $readme);
+    $readme = str_replace('{iconset}', $config['iconset_lower'], $readme);
+    $readme = str_replace('{iconset}', $config['icon_prefix'], $readme);
+    $readme = str_replace('{IconSet}', $config['iconset_display'], $readme);
+    $readme = str_replace('{IconSetPascal}', $config['iconset_pascal'], $readme);
+    $readme = str_replace('{Vendor}', $config['vendor_namespace'], $readme);
+    $readme = str_replace('{VendorNamespace}', $config['vendor_namespace'], $readme);
+    $readme = str_replace('{blade-package-name}', $config['blade_package'], $readme);
+    $readme = str_replace('{author_name}', $config['author_name'], $readme);
+    $readme = str_replace('{homepage}', $config['homepage'] ?: 'https://github.com/' . $config['vendor'], $readme);
+    $readme = str_replace('Your Name', $config['author_name'], $readme);
+    
+    // Handle style-related sections
+    if (!$hasStyles) {
+        // Remove style-related commented sections
+        $readme = preg_replace('/<!-- If your icon set has multiple styles.*?-->\n/s', '', $readme);
+        $readme = preg_replace('/<!-- If your icon set supports style overrides.*?-->\n/s', '', $readme);
+        $readme = preg_replace('/<!-- If your icon set has styles, add this section -->.*?-->\n/s', '', $readme);
+    } else {
+        // Build style list for README
+        $styleList = '';
+        $styleMethodList = '';
+        foreach ($styles as $style) {
+            $styleList .= "- " . ucfirst($style['name']);
+            if ($style === $styles[0]) {
+                $styleList .= " (default)";
+            }
+            $styleList .= "\n";
+            
+            // Add method example
+            $methodName = strtolower($style['name']);
+            $styleMethodList .= $config['iconset_pascal'] . "Icons::make()->" . $methodName . "();\n";
+        }
+        
+        // Replace style placeholders
+        $readme = str_replace('[Add other styles]', trim($styleList), $readme);
+        $readme = str_replace('// ... other style methods', trim($styleMethodList), $readme);
+        
+        // Uncomment style sections
+        $readme = preg_replace('/<!-- If your icon set has multiple styles.*?\n(.*?)-->/s', '$1', $readme);
+        $readme = preg_replace('/<!-- If your icon set supports style overrides.*?\n(.*?)-->/s', '$1', $readme);
+        $readme = preg_replace('/<!-- If your icon set has styles, add this section -->\n<!--\n(.*?)\n-->/s', '$1', $readme);
+        $readme = preg_replace('/<!--\n(.*?)\n-->/s', '$1', $readme);
+        
+        // Build style examples for blade usage
+        $bladeExamples = '';
+        foreach ($styles as $style) {
+            if (!empty($style['suffix'])) {
+                $bladeExamples .= "@svg('{iconset}-example" . $style['suffix'] . "')  // " . ucfirst($style['name']) . " style\n";
+            }
+        }
+        if (!empty($bladeExamples)) {
+            $readme = str_replace("@svg('{iconset}-house-bold')\n@svg('{iconset}-heart-light')\n@svg('{iconset}-settings-regular')", trim($bladeExamples), $readme);
+        }
+    }
+    
+    file_put_contents($readmePath, $readme);
+    echo "✅ Updated README.md\n";
 }
 
 // Delete TemplateIcons.php if it exists
