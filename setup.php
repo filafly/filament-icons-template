@@ -202,13 +202,11 @@ if (file_exists($styleEnumPath)) {
     }
 }
 
-// Update README.md
+// Update README.md from stub
+$readmeStubPath = __DIR__ . '/README.stub';
 $readmePath = __DIR__ . '/README.md';
-if (file_exists($readmePath)) {
-    $readme = file_get_contents($readmePath);
-    
-    // Remove setup instructions section
-    $readme = preg_replace('/<!-- SETUP-INSTRUCTIONS-START -->.*?<!-- SETUP-INSTRUCTIONS-END -->\n\n/s', '', $readme);
+if (file_exists($readmeStubPath)) {
+    $readme = file_get_contents($readmeStubPath);
     
     // Replace placeholders
     $readme = str_replace('{vendor}', $config['vendor'], $readme);
@@ -268,7 +266,11 @@ if (file_exists($readmePath)) {
     }
     
     file_put_contents($readmePath, $readme);
-    echo "✅ Updated README.md\n";
+    echo "✅ Generated README.md from stub\n";
+    
+    // Delete the stub file
+    unlink($readmeStubPath);
+    echo "✅ Removed README.stub\n";
 }
 
 // Delete TemplateIcons.php if it exists
