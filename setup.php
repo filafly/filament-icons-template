@@ -78,6 +78,7 @@ if (! empty($config['blade_version'])) {
 $composer = str_replace('"{blade-icon-package}": "^x.x"', $bladePackageRequire, $composer);
 $composer = str_replace('Your Name', $config['author_name'], $composer);
 $composer = str_replace('email@example.com', $config['author_email'], $composer);
+$composer = str_replace('{Vendor}\\\\Icons\\\\{IconSet}\\\\', $config['vendor_namespace'].'\\\\Icons\\\\'.$config['iconset_pascal'].'\\\\', $composer);
 $composer = str_replace('Vendor\\\\Icons\\\\{IconSet}\\\\', $config['vendor_namespace'].'\\\\Icons\\\\'.$config['iconset_pascal'].'\\\\', $composer);
 
 if (! empty($config['homepage'])) {
@@ -96,7 +97,9 @@ $newPluginPath = __DIR__.'/src/'.$config['iconset_pascal'].'Icons.php';
 
 if (file_exists($pluginPath)) {
     $plugin = file_get_contents($pluginPath);
+    $plugin = str_replace('{Vendor}\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $plugin);
     $plugin = str_replace('Vendor\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $plugin);
+    $plugin = str_replace('{Vendor}', $config['vendor_namespace'], $plugin);
     // Fix the enum import that has {IconSet} placeholder
     $plugin = str_replace('\\Enums\\{IconSet}', '\\Enums\\'.$config['iconset_pascal'], $plugin);
     $plugin = str_replace('{IconSet}Icons', $config['iconset_pascal'].'Icons', $plugin);
@@ -129,7 +132,8 @@ $newEnumPath = __DIR__.'/src/Enums/'.$config['iconset_pascal'].'.php';
 
 if (file_exists($enumPath)) {
     $enum = file_get_contents($enumPath);
-    $enum = str_replace('Vendor\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $enum);
+    $enum = str_replace('{Vendor}\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $enum);
+    $enum = str_replace('{Vendor}', $config['vendor_namespace'], $enum);
     $enum = str_replace('{IconSet}', $config['iconset_pascal'], $enum);
 
     if (! $hasStyles) {
