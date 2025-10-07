@@ -2,10 +2,8 @@
 
 namespace {Vendor}\Icons\{IconSet}Enums;
 
-use Filament\Support\Contracts\ScalableIcon;
-use Filament\Support\Enums\IconSize;
 
-enum {IconSet}: string implements ScalableIcon
+enum {IconSet}: string
 {
     // Icons with consistent naming pattern
     case Search = 'search';
@@ -13,11 +11,4 @@ enum {IconSet}: string implements ScalableIcon
     case Home = 'home';
     case Filter = 'filter';
     // ... all available icons
-
-    public function getIconForSize(IconSize $size): string
-    {
-        return match ($size) {
-            default => '{iconset}-'.$this->value,
-        };
-    }
 }

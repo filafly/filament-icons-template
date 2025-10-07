@@ -135,7 +135,6 @@ if (file_exists($enumPath)) {
     $enum = str_replace('{Vendor}\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $enum);
     $enum = str_replace('{Vendor}', $config['vendor_namespace'], $enum);
     $enum = str_replace('{IconSet}', $config['iconset_pascal'], $enum);
-    $enum = str_replace('{iconset}', $config['icon_prefix'], $enum);
 
     if (! $hasStyles) {
         // Remove style-related enum cases
@@ -308,6 +307,12 @@ if (file_exists($generateIconCasesPath)) {
     $generateIconCasesContent = str_replace(
         "'src/Enums/Hugeicons.php'",
         "'src/Enums/{$config['iconset_pascal']}.php'",
+        $generateIconCasesContent
+    );
+
+    $generateIconCasesContent = str_replace(
+            "'hugeicons'",
+        "'{$config['icon_prefix']}'",
         $generateIconCasesContent
     );
 
