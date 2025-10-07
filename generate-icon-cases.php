@@ -10,6 +10,7 @@
 // Configuration - Update these values as needed
 $config = [
     'vendor_package' => 'afatmustafa/blade-hugeicons', // Change this to your actual package
+    'vendor_namespace' => 'Vendor', // Change this to your vendor namespace
     'icon_set_name' => 'Hugeicons', // Change this to your icon set name
     'enum_file' => 'src/Enums/Hugeicons.php', // Change this to your enum file path
     'icon_prefix' => 'hugeicons', // change this to your icon set name
@@ -66,7 +67,7 @@ $cases = implode("\n", $enumCases);
 $enumContent = <<<PHP
 <?php
 
-namespace Vendor\\Icons\\{$config['icon_set_name']}\\Enums;
+namespace {$config['vendor_namespace']}\\Icons\\{$config['icon_set_name']}\\Enums;
 
 use Filament\\Support\\Contracts\\ScalableIcon;
 use Filament\\Support\\Enums\\IconSize;

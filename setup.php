@@ -300,6 +300,11 @@ if (file_exists($generateIconCasesPath)) {
         $generateIconCasesContent
     );
     $generateIconCasesContent = str_replace(
+        "'vendor_namespace' => 'Vendor'",
+        "'vendor_namespace' => '{$config['vendor_namespace']}'",
+        $generateIconCasesContent
+    );
+    $generateIconCasesContent = str_replace(
         "'Hugeicons'",
         "'{$config['iconset_pascal']}'",
         $generateIconCasesContent
