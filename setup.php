@@ -311,7 +311,7 @@ if (file_exists($generateIconCasesPath)) {
     );
 
     $generateIconCasesContent = str_replace(
-            "'hugeicons'",
+        "'hugeicons'",
         "'{$config['icon_prefix']}'",
         $generateIconCasesContent
     );
