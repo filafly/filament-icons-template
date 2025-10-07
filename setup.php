@@ -310,6 +310,12 @@ if (file_exists($generateIconCasesPath)) {
         $generateIconCasesContent
     );
 
+    $generateIconCasesContent = str_replace(
+            "'hugeicons'",
+        "'{$config['icon_prefix']}'",
+        $generateIconCasesContent
+    );
+
     file_put_contents($generateIconCasesPath, $generateIconCasesContent);
     echo "✅ Configured generate-icon-cases.php\n";
 }

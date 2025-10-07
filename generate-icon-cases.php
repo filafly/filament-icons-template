@@ -12,6 +12,7 @@ $config = [
     'vendor_package' => 'afatmustafa/blade-hugeicons', // Change this to your actual package
     'icon_set_name' => 'Hugeicons', // Change this to your icon set name
     'enum_file' => 'src/Enums/Hugeicons.php', // Change this to your enum file path
+    'icon_prefix' => 'hugeicons', //change this to your icon set name
 ];
 
 echo "🔍 Icon Updater Script\n";
@@ -59,15 +60,41 @@ foreach ($svgFiles as $filename) {
 }
 
 // Create enum content
-$enumContent = "<?php
+
+$cases = implode("\n", $enumCases);
+
+$enumContent = <<<PHP
+<?php
 
 namespace Vendor\\Icons\\{$config['icon_set_name']}\\Enums;
 
-enum {$config['icon_set_name']}: string
+use Filament\\Support\\Contracts\\ScalableIcon;
+use Filament\\Support\\Enums\\IconSize;
+
+enum {$config['icon_set_name']}: string implements ScalableIcon
 {
-".implode("\n", $enumCases).'
+{$cases}
+
+    public function getIconForSize(IconSize \$size): string
+    {
+        return match (\$size) {
+            default => '{$config['icon_prefix']}-' . \$this->value,
+        };
+    }
 }
-';
+PHP;
+//$enumContent = "<?php
+//
+//namespace Vendor\\Icons\\{$config['icon_set_name']}\\Enums;
+//
+//use Filament\Support\Contracts\ScalableIcon;
+//use Filament\Support\Enums\IconSize;
+//
+//enum {$config['icon_set_name']}: string implements ScalableIcon
+//{
+//".implode("\n", $enumCases).'
+//}
+//';
 
 // Ensure the directory exists
 $enumDir = dirname($config['enum_file']);
@@ -75,6 +102,7 @@ if (! is_dir($enumDir)) {
     mkdir($enumDir, 0755, true);
     echo "📁 Created directory: {$enumDir}\n";
 }
+
 
 // Write the enum file
 file_put_contents($config['enum_file'], $enumContent);

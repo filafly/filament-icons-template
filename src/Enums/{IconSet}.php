@@ -1,6 +1,7 @@
 <?php
 
-namespace {Vendor}\Icons\{IconSet}\Enums;
+namespace {Vendor}\Icons\{IconSet}Enums;
+
 
 enum {IconSet}: string
 {
