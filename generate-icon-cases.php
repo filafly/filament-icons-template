@@ -115,9 +115,22 @@ echo '📝 Generated '.count($enumCases)." icon cases\n";
  */
 function filenameToCaseName(string $filename): string
 {
-    // Split by hyphens and capitalize each part
-    $parts = explode('-', $filename);
-    $parts = array_map('ucfirst', $parts);
+    $parts = preg_split('/[^a-zA-Z0-9]+/', $filename);
+    $parts = array_map('ucfirst', array_filter($parts));
+    $caseName = implode('', $parts);
 
-    return implode('', $parts);
+    if (preg_match('/^[0-9]/', $caseName)) {
+        $caseName = 'Icon' . $caseName;
+    }
+
+    return $caseName;
 }
+
+//function filenameToCaseName(string $filename): string
+//{
+//    // Split by hyphens and capitalize each part
+//    $parts = explode('-', $filename);
+//    $parts = array_map('ucfirst', $parts);
+//
+//    return implode('', $parts);
+//}
