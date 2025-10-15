@@ -4,7 +4,7 @@ This template helps you create custom icon packs for Filament Icons, allowing yo
 
 ## 🚀 Quick Start
 
-1. **Clone or download this template**
+1. **Click 'Use this template' at the top of this page and clone locally**
 2. **Run the setup script:**
    ```bash
    php setup.php
