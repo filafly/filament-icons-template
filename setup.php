@@ -34,12 +34,12 @@ $config['blade_version'] = prompt('Enter the Blade icons package version (press 
 $config['icon_prefix'] = prompt("Enter the icon prefix used in Blade components (default: '{$config['iconset_lower']}'): ", $config['iconset_lower']);
 
 // Style support
+echo "\n📎 Style Configuration\n";
+echo "---------------------\n";
 $hasStyles = strtolower(prompt("\nDoes this icon set have multiple styles (e.g., regular, bold, light)? (y/n): ", 'n')) === 'y';
 
 $styles = [];
 if ($hasStyles) {
-    echo "\n📎 Style Configuration\n";
-    echo "---------------------\n";
     echo "Enter the styles available for this icon set.\n";
     echo "For each style, provide:\n";
     echo "  - Name (e.g., 'regular', 'bold', 'light')\n";
