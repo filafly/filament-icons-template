@@ -23,7 +23,10 @@ $defaultVendorNamespace = str_replace(' ', '', ucwords(str_replace(['-', '_'], '
 $config['vendor_namespace'] = prompt("Enter your vendor namespace (default: '{$defaultVendorNamespace}'): ", $defaultVendorNamespace);
 
 $config['iconset_lower'] = prompt("Enter icon set name in lowercase (e.g., 'phosphor'): ");
-$config['iconset_pascal'] = prompt("Enter icon set name in PascalCase (e.g., 'Phosphor'): ");
+
+// Auto-derive PascalCase from lowercase (capitalize first letter of each word)
+$defaultIconsetPascal = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $config['iconset_lower'])));
+$config['iconset_pascal'] = prompt("Enter icon set name in PascalCase (default: '{$defaultIconsetPascal}'): ", $defaultIconsetPascal);
 $config['blade_package'] = prompt("Enter the Blade icons package name (e.g., 'codeat3/blade-phosphor-icons'): ");
 $config['blade_version'] = prompt('Enter the Blade icons package version (press Enter for latest): ', '');
 
