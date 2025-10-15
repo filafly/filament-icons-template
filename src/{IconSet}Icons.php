@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendor\Icons\{IconSet};
+namespace {vendor_namespace}\Icons\{IconSet};
 
-use Vendor\Icons\{IconSet}\Enums\{IconSet};
-use Vendor\Icons\{IconSet}\Enums\{IconSet}Style; // Optional, if styles exist
+use {vendor_namespace}\Icons\{IconSet}\Enums\{IconSet};
+use {vendor_namespace}\Icons\{IconSet}\Enums\{IconSet}Style; // Optional, if styles exist
 use Filafly\Icons\IconSet;
 use Filament\Actions\View\ActionsIconAlias;
 use Filament\Forms\View\FormsIconAlias;
@@ -16,7 +16,7 @@ use Filament\View\PanelsIconAlias;
 
 class {IconSet}Icons extends IconSet
 {
-    protected string $pluginId = 'vendor-filament-{iconset}-icons';
+    protected string $pluginId = '{vendor}-filament-{iconset}-icons';
 
     protected mixed $iconEnum = {IconSet}::class;
 

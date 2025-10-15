@@ -9,22 +9,24 @@ $config = [];
 
 // Package details
 $config['vendor'] = prompt("Enter your vendor name (e.g., 'acme'): ");
-$config['vendor_namespace'] = prompt("Enter your vendor namespace (e.g., 'Acme'): ");
+
+// Auto-derive vendor namespace from vendor name (capitalize first letter of each word)
+$defaultVendorNamespace = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $config['vendor'])));
+$config['vendor_namespace'] = prompt("Enter your vendor namespace (default: '{$defaultVendorNamespace}'): ", $defaultVendorNamespace);
+
 $config['iconset_lower'] = prompt("Enter icon set name in lowercase (e.g., 'phosphor'): ");
 $config['iconset_pascal'] = prompt("Enter icon set name in PascalCase (e.g., 'Phosphor'): ");
-$config['iconset_display'] = prompt("Enter icon set display name (e.g., 'Phosphor Icons'): ");
 $config['blade_package'] = prompt("Enter the Blade icons package name (e.g., 'codeat3/blade-phosphor-icons'): ");
-$config['blade_version'] = prompt("Enter the Blade icons package version (e.g., '^2.0', or press Enter for latest): ", '');
+$config['blade_version'] = prompt('Enter the Blade icons package version (press Enter for latest): ', '');
 
-// Icon prefix
-$config['icon_prefix'] = prompt("\nEnter the icon prefix used in Blade components (e.g., 'phosphor', 'carbon'): ", $config['iconset_lower']);
+// Icon prefix (usually same as iconset_lower)
+$config['icon_prefix'] = prompt("Enter the icon prefix used in Blade components (default: '{$config['iconset_lower']}'): ", $config['iconset_lower']);
 
 // Author details
 echo "\n📝 Author Information\n";
 echo "---------------------\n";
 $config['author_name'] = prompt('Enter your name: ');
 $config['author_email'] = prompt('Enter your email: ');
-$config['homepage'] = prompt('Enter homepage URL (optional, press Enter to skip): ', '');
 
 // Style support
 $hasStyles = strtolower(prompt("\nDoes this icon set have multiple styles (e.g., regular, bold, light)? (y/n): ", 'n')) === 'y';
@@ -67,8 +69,9 @@ echo "\n\n🔧 Configuring package...\n";
 // Update composer.json
 $composerPath = __DIR__.'/composer.json';
 $composer = file_get_contents($composerPath);
-$composer = str_replace('vendor/filament-{iconset}-icons', $config['vendor'].'/filament-'.$config['iconset_lower'].'-icons', $composer);
-$composer = str_replace('{IconSet}', $config['iconset_display'], $composer);
+$composer = str_replace('{vendor}', $config['vendor'], $composer);
+$composer = str_replace('{iconset}', $config['iconset_lower'], $composer);
+$composer = str_replace('{IconSet}', $config['iconset_pascal'], $composer);
 // Handle blade package version
 if (! empty($config['blade_version'])) {
     $bladePackageRequire = '"'.$config['blade_package'].'": "'.$config['blade_version'].'"';
@@ -76,17 +79,12 @@ if (! empty($config['blade_version'])) {
     $bladePackageRequire = '"'.$config['blade_package'].'": "*"';
 }
 $composer = str_replace('"{blade-icon-package}": "^x.x"', $bladePackageRequire, $composer);
-$composer = str_replace('Your Name', $config['author_name'], $composer);
-$composer = str_replace('email@example.com', $config['author_email'], $composer);
-$composer = str_replace('{Vendor}\\\\Icons\\\\{IconSet}\\\\', $config['vendor_namespace'].'\\\\Icons\\\\'.$config['iconset_pascal'].'\\\\', $composer);
-$composer = str_replace('Vendor\\\\Icons\\\\{IconSet}\\\\', $config['vendor_namespace'].'\\\\Icons\\\\'.$config['iconset_pascal'].'\\\\', $composer);
+$composer = str_replace('{author_name}', $config['author_name'], $composer);
+$composer = str_replace('{author_email}', $config['author_email'], $composer);
+$composer = str_replace('{vendor_namespace}\\Icons\\{IconSet}\\', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'].'\\', $composer);
 
-if (! empty($config['homepage'])) {
-    $composer = str_replace('https://your-website.com', $config['homepage'], $composer);
-} else {
-    // Remove homepage line if not provided
-    $composer = preg_replace('/\s*"homepage":\s*"[^"]*",?\n/', '', $composer);
-}
+// Remove homepage line since it's usually not needed
+$composer = preg_replace('/\s*"homepage":\s*"[^"]*",?\n/', '', $composer);
 
 file_put_contents($composerPath, $composer);
 echo "✅ Updated composer.json\n";
@@ -97,16 +95,15 @@ $newPluginPath = __DIR__.'/src/'.$config['iconset_pascal'].'Icons.php';
 
 if (file_exists($pluginPath)) {
     $plugin = file_get_contents($pluginPath);
-    $plugin = str_replace('{Vendor}\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $plugin);
-    $plugin = str_replace('Vendor\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $plugin);
-    $plugin = str_replace('{Vendor}', $config['vendor_namespace'], $plugin);
+    $plugin = str_replace('{vendor_namespace}\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $plugin);
+    $plugin = str_replace('{vendor_namespace}', $config['vendor_namespace'], $plugin);
     // Fix the enum import that has {IconSet} placeholder
     $plugin = str_replace('\\Enums\\{IconSet}', '\\Enums\\'.$config['iconset_pascal'], $plugin);
     $plugin = str_replace('{IconSet}Icons', $config['iconset_pascal'].'Icons', $plugin);
     $plugin = str_replace('{IconSet}Style', $config['iconset_pascal'].'Style', $plugin);
     $plugin = str_replace('{IconSet}::', $config['iconset_pascal'].'::', $plugin);
     $plugin = str_replace('{IconSet}', $config['iconset_pascal'], $plugin); // Catch any remaining {IconSet} placeholders
-    $plugin = str_replace('vendor-filament-{iconset}-icons', $config['vendor'].'-filament-'.$config['iconset_lower'].'-icons', $plugin);
+    $plugin = str_replace('{vendor}', $config['vendor'], $plugin);
     $plugin = str_replace('{iconset}', $config['icon_prefix'], $plugin);
 
     if (! $hasStyles) {
@@ -132,8 +129,8 @@ $newEnumPath = __DIR__.'/src/Enums/'.$config['iconset_pascal'].'.php';
 
 if (file_exists($enumPath)) {
     $enum = file_get_contents($enumPath);
-    $enum = str_replace('{Vendor}\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $enum);
-    $enum = str_replace('{Vendor}', $config['vendor_namespace'], $enum);
+    $enum = str_replace('{vendor_namespace}\\Icons\\{IconSet}', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'], $enum);
+    $enum = str_replace('{vendor_namespace}', $config['vendor_namespace'], $enum);
     $enum = str_replace('{IconSet}', $config['iconset_pascal'], $enum);
 
     if (! $hasStyles) {
@@ -226,15 +223,11 @@ if (file_exists($readmeStubPath)) {
 
     // Replace placeholders
     $readme = str_replace('{vendor}', $config['vendor'], $readme);
-    $readme = str_replace('{iconset}', $config['iconset_lower'], $readme);
     $readme = str_replace('{iconset}', $config['icon_prefix'], $readme);
-    $readme = str_replace('{IconSet}', $config['iconset_display'], $readme);
-    $readme = str_replace('{IconSetPascal}', $config['iconset_pascal'], $readme);
-    $readme = str_replace('{Vendor}', $config['vendor_namespace'], $readme);
-    $readme = str_replace('{VendorNamespace}', $config['vendor_namespace'], $readme);
+    $readme = str_replace('{IconSet}', $config['iconset_pascal'], $readme);
+    $readme = str_replace('{vendor_namespace}', $config['vendor_namespace'], $readme);
     $readme = str_replace('{blade-package-name}', $config['blade_package'], $readme);
     $readme = str_replace('{author_name}', $config['author_name'], $readme);
-    $readme = str_replace('{homepage}', $config['homepage'] ?: 'https://github.com/'.$config['vendor'], $readme);
 
     // Handle style-related sections
     if (! $hasStyles) {
@@ -286,6 +279,15 @@ if (file_exists($readmeStubPath)) {
     // Delete the stub file
     unlink($readmeStubPath);
     echo "✅ Removed README.stub\n";
+}
+
+// Update LICENSE.md
+$licensePath = __DIR__.'/LICENSE.md';
+if (file_exists($licensePath)) {
+    $license = file_get_contents($licensePath);
+    $license = str_replace('{author_name}', $config['author_name'], $license);
+    file_put_contents($licensePath, $license);
+    echo "✅ Updated LICENSE.md\n";
 }
 
 // Update generate-icon-cases.php with correct configuration

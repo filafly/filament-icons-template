@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendor\Icons\{IconSet}\Enums;
+namespace {vendor_namespace}\Icons\{IconSet}\Enums;
 
 use Filafly\Icons\Contracts\StyleEnum;
 
