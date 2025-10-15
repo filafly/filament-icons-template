@@ -81,7 +81,7 @@ if (! empty($config['blade_version'])) {
 $composer = str_replace('"{blade-icon-package}": "^x.x"', $bladePackageRequire, $composer);
 $composer = str_replace('{author_name}', $config['author_name'], $composer);
 $composer = str_replace('{author_email}', $config['author_email'], $composer);
-$composer = str_replace('{vendor_namespace}\\Icons\\{IconSet}\\', $config['vendor_namespace'].'\\Icons\\'.$config['iconset_pascal'].'\\', $composer);
+$composer = str_replace('{vendor_namespace}', $config['vendor_namespace'], $composer);
 
 // Remove homepage line since it's usually not needed
 $composer = preg_replace('/\s*"homepage":\s*"[^"]*",?\n/', '', $composer);
