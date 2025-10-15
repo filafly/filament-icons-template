@@ -1,5 +1,5 @@
 {
-  "name": "vendor/filament-{iconset}-icons",
+  "name": "{vendor}/filament-{iconset}-icons",
   "description": "{IconSet} icon pack for Filament Icons",
   "type": "library",
   "license": "MIT",
@@ -11,12 +11,12 @@
     "replace",
     "swap"
   ],
-  "homepage": "https://your-website.com",
+  "homepage": "{homepage}",
   "authors": [
     {
       "role": "Developer",
-      "name": "Your Name",
-      "email": "email@example.com"
+      "name": "{author_name}",
+      "email": "{author_email}"
     }
   ],
   "require": {
@@ -27,7 +27,7 @@
   },
   "autoload": {
     "psr-4": {
-      "{Vendor}\\Icons\\{IconSet}\\": "src/"
+      "{vendor_namespace}\\\\Icons\\\\{IconSet}\\\\": "src/"
     }
   },
   "minimum-stability": "stable",

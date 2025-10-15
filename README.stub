@@ -17,7 +17,7 @@ composer require {vendor}/filament-{iconset}-icons
 After the package is installed, you must register the plugin in your Filament Panel provider:
 
 ```php
-use {Vendor}\Icons\{IconSet}\{IconSet}Icons;
+use {vendor_namespace}\Icons\{IconSet}\{IconSet}Icons;
 
 public function panel(Panel $panel): Panel
 {
@@ -54,8 +54,8 @@ If you need to override certain icons to use a different style, you can use eith
 Use the `overrideStyleForAlias` method with a [Filament Icon Alias](https://filamentphp.com/docs/4.x/styling/icons#available-icon-aliases). This method works with either a single icon key (string) or multiple icon keys (array).
 
 ```php
-use {Vendor}\Icons\{IconSet}\{IconSet}Icons;
-use {Vendor}\Icons\{IconSet}\Enums\{IconSet}Style;
+use {vendor_namespace}\Icons\{IconSet}\{IconSet}Icons;
+use {vendor_namespace}\Icons\{IconSet}\Enums\{IconSet}Style;
 use Filament\Tables\View\TablesIconAlias;
 use Filament\Actions\View\ActionsIconAlias;
 
@@ -74,9 +74,9 @@ use Filament\Actions\View\ActionsIconAlias;
 Use the `overrideStyleForIcon` method with a {IconSet} icon enum case:
 
 ```php
-use {Vendor}\Icons\{IconSet}\{IconSet}Icons;
-use {Vendor}\Icons\{IconSet}\Enums\{IconSet};
-use {Vendor}\Icons\{IconSet}\Enums\{IconSet}Style;
+use {vendor_namespace}\Icons\{IconSet}\{IconSet}Icons;
+use {vendor_namespace}\Icons\{IconSet}\Enums\{IconSet};
+use {vendor_namespace}\Icons\{IconSet}\Enums\{IconSet}Style;
 
 // Override a specific icon
 {IconSet}Icons::make()->overrideStyleForIcon({IconSet}::Check, {IconSet}Style::Bold);
@@ -96,8 +96,8 @@ You can change which icon is used for any given Filament alias:
 
 ### Using icon aliases
 ```php
-use {Vendor}\Icons\{IconSet}\{IconSet}Icons;
-use {Vendor}\Icons\{IconSet}\Enums\{IconSet};
+use {vendor_namespace}\Icons\{IconSet}\{IconSet}Icons;
+use {vendor_namespace}\Icons\{IconSet}\Enums\{IconSet};
 use Filament\Tables\View\TablesIconAlias;
 use Filament\Actions\View\ActionsIconAlias;
 
@@ -113,8 +113,8 @@ use Filament\Actions\View\ActionsIconAlias;
 
 ### Using icon enum cases
 ```php
-use {Vendor}\Icons\{IconSet}\{IconSet}Icons;
-use {Vendor}\Icons\{IconSet}\Enums\{IconSet};
+use {vendor_namespace}\Icons\{IconSet}\{IconSet}Icons;
+use {vendor_namespace}\Icons\{IconSet}\Enums\{IconSet};
 
 // Replace every instance of one icon with another
 {IconSet}Icons::make()->overrideIcon({IconSet}::User, {IconSet}::UserCircle);

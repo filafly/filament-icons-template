@@ -4,13 +4,25 @@ This template helps you create custom icon packs for Filament Icons, allowing yo
 
 ## 🚀 Quick Start
 
-1. **Clone or download this template**
-2. **Run the setup script:**
+1. Click 'Use this template' at the top of this page and clone locally
+2. Run the setup script:
    ```bash
    php setup.php
    ```
-3. **Follow the prompts to configure your package**
+3. Run `composer install` to download dependencies
+4. Run `php generate-icon-cases.php` to build the enum cases
+5. Map the icon aliases to cases
+   ```php
+   // In your class that extends IconSet
+   protected array $iconMap = [
+        PanelsIconAlias::GLOBAL_SEARCH_FIELD => IconSet::Search,
+        PanelsIconAlias::PAGES_DASHBOARD_ACTIONS_FILTER => IconSet::Filter,
+        ...
+   ]
+   ```
+6. Configure styles if applicable
 
+## 🛠️ The Setup Script
 The setup script will:
 - Configure your package name and namespace
 - Set up the correct icon set references
@@ -18,18 +30,9 @@ The setup script will:
 - Replace this README with package documentation
 - Delete itself when complete
 
-## 📝 What You'll Need
-
+## 📝 To Get What You'll Need
 Before running setup, gather:
 - Your vendor name (e.g., 'acme')
 - Icon set name in different cases (lowercase, PascalCase)
 - The Blade icons package name and version
 - Whether your icon set has multiple styles
-
-## 🔧 After Setup
-
-Once configured, you'll need to:
-1. Run `composer install`
-2. Update icon mappings in your main plugin class
-3. Add all available icons to the enum
-4. Configure styles if applicable
