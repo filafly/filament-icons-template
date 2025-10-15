@@ -7,7 +7,15 @@ echo "================================\n\n";
 // Collect user input
 $config = [];
 
+// Author details
+echo "\n📝 Author Information\n";
+echo "---------------------\n";
+$config['author_name'] = prompt('Enter your name: ');
+$config['author_email'] = prompt('Enter your email: ');
+
 // Package details
+echo "\n📝 Package Information\n";
+echo "---------------------\n";
 $config['vendor'] = prompt("Enter your vendor name (e.g., 'acme'): ");
 
 // Auto-derive vendor namespace from vendor name (capitalize first letter of each word)
@@ -21,12 +29,6 @@ $config['blade_version'] = prompt('Enter the Blade icons package version (press 
 
 // Icon prefix (usually same as iconset_lower)
 $config['icon_prefix'] = prompt("Enter the icon prefix used in Blade components (default: '{$config['iconset_lower']}'): ", $config['iconset_lower']);
-
-// Author details
-echo "\n📝 Author Information\n";
-echo "---------------------\n";
-$config['author_name'] = prompt('Enter your name: ');
-$config['author_email'] = prompt('Enter your email: ');
 
 // Style support
 $hasStyles = strtolower(prompt("\nDoes this icon set have multiple styles (e.g., regular, bold, light)? (y/n): ", 'n')) === 'y';
