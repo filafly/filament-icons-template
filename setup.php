@@ -303,7 +303,9 @@ if (file_exists($securityStubPath)) {
     $security = file_get_contents($securityStubPath);
     $security = str_replace('{vendor}', $config['vendor'], $security);
     $security = str_replace('{iconset}', $config['iconset_lower'], $security);
-    $security = str_replace('{author_email}', $config['author_email'], $security);
+    $security = $config['author_email'] !== ''
+        ? str_replace('{author_email}', $config['author_email'], $security)
+        : str_replace('Email **{author_email}** with', 'Email the maintainer listed in `composer.json` with', $security);
     file_put_contents(__DIR__.'/SECURITY.md', $security);
     unlink($securityStubPath);
     echo "✅ Generated SECURITY.md\n";
